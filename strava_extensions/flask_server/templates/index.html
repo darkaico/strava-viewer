@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Strava Viewer</title>
@@ -9,6 +10,7 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+    <meta content="text/html; charset=utf-8" />
   </head>
   <body>
     <div class="container">
@@ -17,8 +19,8 @@
       <ul class="collection">
         {% for club_activity in club_activities %}
         <li class="collection-item avatar">
-          <i class="material-icons circle"
-            >{{club_activity.materialize_icon}}</i
+          <em class="material-icons circle"
+            >{{club_activity.materialize_icon}}</em
           >
           <span class="title">{{club_activity.name}}</span>
           <p>

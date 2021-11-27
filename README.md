@@ -4,8 +4,6 @@
 
 App that fetchs information from strava and show in a simple flask application.
 
-## Local Testing
-
 ### Strava API
 
 First of all you need Strava API credentials could be found [here](https://developers.strava.com/).
@@ -18,7 +16,23 @@ STRAVA_CLUB_ID=<Club Id>
 ```
 
 To make things easier to test in local env im using [python-dotenv](https://github.com/theskumar/python-dotenv) so you could create a new file called `.env` under `strava_extensions` folder (there is an `.env.example` you could us as example).
+## Start the App
 
+### Docker
+
+Start the app by just calling
+
+```bash
+$ docker-compose up
+```
+
+or using make
+
+```bash
+$ make up
+```
+
+### Local Development
 ### Poetry
 
 Im using [poetry](https://python-poetry.org/docs/) as dependency management, make sure you have it installed before following next steps.
@@ -32,7 +46,7 @@ poetry install
 - Run Flask Project
 
 ```shell
-poetry run python strava_extensions/flask-server/main.py
+poetry run python strava_extensions/flask_server/main.py
 ```
 
 - Run tests
@@ -40,11 +54,3 @@ poetry run python strava_extensions/flask-server/main.py
 ```shell
 poetry run pytest
 ```
-
-#### Makefile
-
-Also there is a Makefile file that have the following instructions that will make more easier previous steps:
-
-- make install: install dependencies
-- make flask_start: start flask server
-- make test: run unit tests

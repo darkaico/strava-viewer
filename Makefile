@@ -5,7 +5,7 @@ test:
 	poetry run pytest
 
 flask_start:
-	poetry run python strava_extensions/flask-server/main.py
+	poetry run python -m strava_extensions.flask_server.main
 
 clean:
 	find . -iname '*.pyc' -delete
@@ -16,3 +16,8 @@ update-packages:
 
 lint:
 	pre-commit run --all-files
+
+# Docker
+
+up:
+	docker-compose up
