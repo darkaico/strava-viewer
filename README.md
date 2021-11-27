@@ -32,7 +32,7 @@ poetry install
 - Run Flask Project
 
 ```shell
-poetry run python strava_extensions/flask-server/main.py
+poetry run python strava_extensions/flask_server/main.py
 ```
 
 - Run tests
