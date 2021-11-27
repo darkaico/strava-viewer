@@ -1,20 +1,17 @@
-import os
-
 from flask import Flask, render_template
+from flask_wtf import CSRFProtect
 
-from strava_extensions.strava.api import StravaAPI
+from strava_extensions.strava.services.activities_services import get_club_activities
 
 app = Flask(__name__)
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 
 @app.route("/")
 @app.route("/index")
 def index():
-    token = os.getenv("STRAVA_API_ACCESS_TOKEN")
-    club_id = os.getenv("STRAVA_CLUB_ID")
-
-    strava_api = StravaAPI(token)
-    club_activities = strava_api.get_club_activities(club_id)
+    club_activities = get_club_activities()
 
     return render_template("index.html", club_activities=club_activities)
 
