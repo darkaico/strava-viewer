@@ -1,5 +1,6 @@
-from strava_extensions.strava.api import StravaAPI
 import os
+
+from strava_extensions.strava.api import StravaAPI
 
 STRAVA_API_ACCESS_TOKEN = os.getenv("STRAVA_API_ACCESS_TOKEN")
 
