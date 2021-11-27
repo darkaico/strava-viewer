@@ -54,12 +54,12 @@ jobs:
           pwd
           make test
 
-      # - name: fix code coverage paths
-      #   run: |
-      #     sed -i 's/\/home\/runner\/work\/strava-extensions\/strava-extensions\//\/github\/workspace\//g' cover/coverage.xml
+      - name: fix code coverage paths
+        run: |
+          sed -i 's/\/home\/runner\/work\/strava-extensions\/strava-extensions\//\/github\/workspace\//g' cover/coverage.xml
 
-      # - name: SonarCloud Scan
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
