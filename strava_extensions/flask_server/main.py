@@ -1,8 +1,11 @@
 from flask import Flask, render_template
+from flask_wtf import CSRFProtect
 
 from strava_extensions.strava.services.activities_services import get_club_activities
 
 app = Flask(__name__)
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 
 @app.route("/")
