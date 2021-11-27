@@ -19,5 +19,5 @@ lint:
 
 # Docker
 
-docker-up:
+up:
 	docker-compose up
