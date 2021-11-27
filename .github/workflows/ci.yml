@@ -75,3 +75,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: "Strava Extension updated in main branch :rocket:"
+          SLACK_USERNAME: "corgi-policia"
+          SLACK_ICON: https://icon-library.com/images/corgi-icon/corgi-icon-2.jpg
