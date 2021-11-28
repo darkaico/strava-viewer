@@ -2,7 +2,9 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import pytest
+import requests
 
+from strava_extensions.strava.utils import redis_client
 from tests.fixtures import loaders
 
 
@@ -14,6 +16,29 @@ class MockResponse:
 
     def json(self):
         return self.json_response
+
+    def raise_for_status(self):
+        raise requests.exceptions.HTTPError()
+
+
+class MockRedis:
+    def __init__(self):
+        self.storage = {}
+
+    def set(self, key, value, exp=None):
+        self.storage[key] = value
+
+    def get(self, key):
+        return self.storage.get(key)
+
+    def exists(self, key):
+        return key in self.storage
+
+
+@pytest.fixture(autouse=True)
+def mock_redis(mocker):
+    """Mock Redis client during tests."""
+    mocker.patch.object(redis_client, "get_redis_client", return_value=MockRedis())
 
 
 @pytest.fixture(autouse=True)

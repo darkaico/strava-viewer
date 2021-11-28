@@ -11,8 +11,10 @@ First of all you need Strava API credentials could be found [here](https://devel
 Once you got it you should set the following environment variables
 
 ```shell
-STRAVA_API_ACCESS_TOKEN=<Access Token>
-STRAVA_CLUB_ID=<Club Id>
+STRAVA_API_CLIENT_ID=<strava api client id>
+STRAVA_API_CLIENT_SECRET=<strava api client secret>
+STRAVA_API_REFRESH_TOKEN=<strava api refresh token>
+STRAVA_CLUB_ID=<strava club id>
 ```
 
 To make things easier to test in local env im using [python-dotenv](https://github.com/theskumar/python-dotenv) so you could create a new file called `.env` under `strava_extensions` folder (there is an `.env.example` you could us as example).
