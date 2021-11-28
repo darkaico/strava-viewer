@@ -31,9 +31,6 @@ class StravaAPI(LoggerMixin):
 
         return self.redis_client.get(self.access_token_redis_key)
 
-    def _get_refreshed_token(self):
-        pass
-
     def _refresh_token(self):
         data = {
             "client_id": self.api_client_id,
