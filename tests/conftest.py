@@ -26,7 +26,7 @@ class MockRedis:
     def __init__(self):
         self.storage = {}
 
-    def set(self, key, value, exp=None):
+    def set(self, key, value, ex=None):
         self.storage[key] = value
 
     def get(self, key):
@@ -74,32 +74,46 @@ def strava_api(monkeypatch, mock_redis):
 
 
 @pytest.fixture
-def api_empty_result(monkeypatch):
+def strava_api_no_token(monkeypatch, mock_redis):
+
+    return StravaAPI()
+
+
+@pytest.fixture
+def api_empty_result(mocker):
     def mockreturn(url, params=None):
         return MockResponse(200, [])
 
-    monkeypatch.setattr(requests, "get", mockreturn)
+    mocker.patch.object(requests, "get", mockreturn)
 
 
 @pytest.fixture
-def api_with_activities(monkeypatch, json_club_activities):
+def api_with_activities(mocker, json_club_activities):
     def mockreturn(url, params=None):
         return MockResponse(200, json_club_activities)
 
-    monkeypatch.setattr(requests, "get", mockreturn)
+    mocker.patch.object(requests, "get", mockreturn)
 
 
 @pytest.fixture
-def api_with_invalid_activities(monkeypatch, json_invalid_club_activities):
+def api_with_invalid_activities(mocker, json_invalid_club_activities):
     def mockreturn(url, params=None):
         return MockResponse(200, json_invalid_club_activities)
 
-    monkeypatch.setattr(requests, "get", mockreturn)
+    mocker.patch.object(requests, "get", mockreturn)
 
 
 @pytest.fixture
-def api_http_error(monkeypatch):
+def api_http_error_400(mocker):
     def mockreturn(url, params=None):
         return MockResponse(400)
 
-    monkeypatch.setattr(requests, "get", mockreturn)
+    mocker.patch.object(requests, "get", mockreturn)
+
+
+@pytest.fixture
+def api_http_error_401(mocker):
+    def mockreturn(url, params=None):
+        return MockResponse(401)
+
+    mocker.patch.object(requests, "get", mockreturn)
