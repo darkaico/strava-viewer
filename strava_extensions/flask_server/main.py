@@ -16,7 +16,6 @@ STRAVA_CLUB_ID = os.getenv("STRAVA_CLUB_ID")
 @app.route("/index")
 def index():
     club_activities = get_club_activities(STRAVA_CLUB_ID)
-
     return render_template("index.html", club_activities=club_activities)
 
 
