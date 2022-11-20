@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 
 LABEL maintainer="darkaico@gmail.com"
 
@@ -8,7 +8,7 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.1
+    POETRY_VERSION=1.2.0
 
 # System deps:
 RUN pip install "poetry==$POETRY_VERSION"
