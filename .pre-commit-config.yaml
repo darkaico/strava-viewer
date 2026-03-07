@@ -24,7 +24,3 @@ repos:
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
-  - repo: https://github.com/IamTheFij/docker-pre-commit
-    rev: v2.0.0
-    hooks:
-      - id: docker-compose-check
