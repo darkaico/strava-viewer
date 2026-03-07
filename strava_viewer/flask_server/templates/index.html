@@ -65,6 +65,7 @@
 <nav class="flex items-center gap-4">
 <a href="{{ url_for('index') }}" class="bg-white text-black comic-border px-4 py-2 font-bold uppercase text-sm hover:bg-yellow-400 transition-colors">Activity list</a>
 <a href="{{ url_for('dashboard') }}" class="bg-white text-black comic-border px-4 py-2 font-bold uppercase text-sm hover:bg-yellow-400 transition-colors">Dashboard</a>
+<a href="{{ url_for('lab') }}" class="bg-white text-black comic-border px-4 py-2 font-bold uppercase text-sm hover:bg-yellow-400 transition-colors">Data Lab</a>
 <button class="bg-white text-black comic-border p-2 flex items-center justify-center hover:bg-yellow-400 transition-colors">
 <span class="material-symbols-outlined">settings</span>
 </button>
@@ -89,6 +90,10 @@
 <a href="{{ url_for('dashboard') }}" class="group flex items-center gap-4 p-3 bg-white text-black comic-border hover:-translate-y-1 transition-transform">
 <span class="material-symbols-outlined">monitoring</span>
 <span class="font-bold uppercase tracking-tight">Dashboard</span>
+</a>
+<a href="{{ url_for('lab') }}" class="group flex items-center gap-4 p-3 bg-white text-black comic-border hover:-translate-y-1 transition-transform">
+<span class="material-symbols-outlined">biotech</span>
+<span class="font-bold uppercase tracking-tight">Data Lab</span>
 </a>
 </nav>
 </aside>
@@ -135,6 +140,7 @@
 <div class="flex gap-6">
 <a href="{{ url_for('index') }}" class="text-xs font-bold uppercase hover:text-primary cursor-pointer">Activity list</a>
 <a href="{{ url_for('dashboard') }}" class="text-xs font-bold uppercase hover:text-primary cursor-pointer">Dashboard</a>
+<a href="{{ url_for('lab') }}" class="text-xs font-bold uppercase hover:text-primary cursor-pointer">Data Lab</a>
 </div>
 </div>
 </footer>

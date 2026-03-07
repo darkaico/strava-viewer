@@ -73,6 +73,30 @@ def dashboard():
     )
 
 
+@app.route("/lab")
+def lab():
+    error = None
+    activities = []
+    try:
+        activities = get_activities_for_view(club_id=None)
+        logger.info("Loaded %s activities for lab", len(activities))
+    except Exception as e:
+        logger.exception("Failed to load activities for lab")
+        error = str(e)
+    metrics = get_dashboard_metrics(activities)
+    totals = metrics["totals"]
+    totals["total_moving_time_formatted"] = _format_moving_time(
+        totals["total_moving_time_seconds"]
+    )
+    return render_template(
+        "data_lab.html",
+        metrics=metrics,
+        chart_data_by_week=json.dumps(metrics["by_week"]),
+        chart_data_by_type=json.dumps(metrics["by_type"]),
+        error=error,
+    )
+
+
 if __name__ == "__main__":
     port = int(os.getenv("FLASK_PORT", "5000"))
     app.run(host="0.0.0.0", port=port, debug=True)
