@@ -1,9 +1,23 @@
+"""Marshmallow schemas for Strava API payloads; build DTOs in post_load."""
+
 from dacite import from_dict
 from marshmallow import EXCLUDE, Schema, fields, post_load
 
-from strava_viewer.strava.models.activities import SummaryActivity
+from strava_viewer.strava.dto import Athlete, SummaryActivity
 
-from .athletes_schemas import AthleteSchema
+
+class AthleteSchema(Schema):
+
+    class Meta:
+        unknown = EXCLUDE
+
+    resource_state = fields.Int(required=False, load_default=1)
+    firstname = fields.Str(required=False, load_default="")
+    lastname = fields.Str(required=False, load_default="")
+
+    @post_load
+    def make_model(self, data, **kwargs):
+        return Athlete(**data)
 
 
 class SummaryActivitySchema(Schema):

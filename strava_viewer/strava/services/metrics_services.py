@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
-from strava_viewer.strava.models.activities import SummaryActivity
+from strava_viewer.strava.dto import SummaryActivity
 
 
 @dataclass

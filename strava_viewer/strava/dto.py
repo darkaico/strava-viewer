@@ -1,14 +1,20 @@
+"""Data transfer objects for Strava API responses."""
+
 from dataclasses import dataclass
 from typing import Optional
 
 from strava_viewer.strava.utils import materialize_mapping_utils
 
-from .athletes import Athlete
+
+@dataclass
+class Athlete:
+    resource_state: int
+    firstname: str
+    lastname: str
 
 
 @dataclass
 class SummaryActivity:
-
     athlete: Athlete
     resource_state: int
     name: str
@@ -18,7 +24,7 @@ class SummaryActivity:
     total_elevation_gain: float
     activity_type: str
     workout_type: Optional[int] = None
-    start_date: Optional[str] = None  # ISO 8601 from API, for time-based metrics
+    start_date: Optional[str] = None
 
     @property
     def materialize_icon(self):

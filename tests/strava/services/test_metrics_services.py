@@ -1,7 +1,6 @@
 import pytest
 
-from strava_viewer.strava.models.activities import SummaryActivity
-from strava_viewer.strava.models.athletes import Athlete
+from strava_viewer.strava.dto import Athlete, SummaryActivity
 from strava_viewer.strava.services.metrics_services import (
     compute_by_activity_type,
     compute_by_week,

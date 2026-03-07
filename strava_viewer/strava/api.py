@@ -3,9 +3,10 @@ from functools import cached_property
 from http import HTTPStatus
 
 import requests
+from marshmallow import ValidationError
 
 from strava_viewer.strava import settings
-from strava_viewer.strava.services.builder_service import BuilderService
+from strava_viewer.strava.schemas import SummaryActivitySchema
 from strava_viewer.strava.utils.redis_client import get_redis_client
 from strava_viewer.utils.mixins import LoggerMixin
 
@@ -84,6 +85,15 @@ class StravaAPI(LoggerMixin):
 
         return response.json()
 
+    def _parse_activities(self, json_activities):
+        if not json_activities:
+            return []
+        try:
+            return SummaryActivitySchema(many=True).load(json_activities)
+        except (ValidationError, TypeError):
+            self.logger.exception("Activity list validation failed")
+            raise
+
     def get_athlete_activities(self, after=None, before=None, per_page=200):
         """List the authenticated athlete's activities. Requires activity:read scope."""
         resource_url = "athlete/activities"
@@ -93,11 +103,9 @@ class StravaAPI(LoggerMixin):
         if before is not None:
             params["before"] = int(before)
         json_activities = self.get(resource_url, params=params)
-        return BuilderService.build_summary_activities(json_activities)
+        return self._parse_activities(json_activities)
 
     def get_club_activities(self, club_id: int):
         resource_url = f"clubs/{club_id}/activities"
-
         json_activities = self.get(resource_url)
-
-        return BuilderService.build_summary_activities(json_activities)
+        return self._parse_activities(json_activities)
