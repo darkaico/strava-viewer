@@ -37,7 +37,7 @@ def index():
         logger.exception("Failed to load activities")
         error = str(e)
     return render_template(
-        "index.html",
+        "activity_list.html",
         club_activities=activities,
         error=error,
         active_nav="index",
