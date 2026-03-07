@@ -1,0 +1,22 @@
+<aside class="w-full md:w-64 border-r-4 border-black bg-background-dark halftone-bg p-6 flex flex-col gap-8">
+  <div class="flex flex-col gap-2">
+    <div class="bg-white text-black p-3 comic-border -rotate-1 self-start">
+      <h1 class="text-lg font-bold uppercase">{{ sidebar_title }}</h1>
+      <p class="text-xs font-black italic text-primary">{{ sidebar_subtitle }}</p>
+    </div>
+  </div>
+  <nav class="flex flex-col gap-4">
+    <a href="{{ url_for('dashboard') }}" class="group flex items-center gap-4 p-3 comic-border transition-transform {% if active_nav == 'dashboard' %}bg-primary text-white -translate-x-2{% else %}bg-white text-black hover:-translate-y-1{% endif %}">
+      <span class="material-symbols-outlined">monitoring</span>
+      <span class="font-bold uppercase tracking-tight {% if active_nav == 'dashboard' %}italic{% endif %}">Dashboard</span>
+    </a>
+    <a href="{{ url_for('index') }}" class="group flex items-center gap-4 p-3 comic-border transition-transform {% if active_nav == 'index' %}bg-primary text-white -translate-x-2{% else %}bg-white text-black hover:-translate-y-1{% endif %}">
+      <span class="material-symbols-outlined">list</span>
+      <span class="font-bold uppercase tracking-tight {% if active_nav == 'index' %}italic{% endif %}">Activity list</span>
+    </a>
+    <a href="{{ url_for('lab') }}" class="group flex items-center gap-4 p-3 comic-border transition-transform {% if active_nav == 'lab' %}bg-primary text-white -translate-x-2{% else %}bg-white text-black hover:-translate-y-1{% endif %}">
+      <span class="material-symbols-outlined">biotech</span>
+      <span class="font-bold uppercase tracking-tight {% if active_nav == 'lab' %}italic{% endif %}">Data Lab</span>
+    </a>
+  </nav>
+</aside>

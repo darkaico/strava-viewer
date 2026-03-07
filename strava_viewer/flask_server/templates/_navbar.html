@@ -6,8 +6,8 @@
     <h2 class="text-black text-2xl font-black uppercase tracking-tighter italic">{{ header_title }}</h2>
   </div>
   <nav class="flex items-center gap-4">
-    <a href="{{ url_for('index') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'index' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Activity list</a>
     <a href="{{ url_for('dashboard') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'dashboard' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Dashboard</a>
+    <a href="{{ url_for('index') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'index' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Activity list</a>
     <a href="{{ url_for('lab') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'lab' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Data Lab</a>
     <button class="bg-white text-black comic-border p-2 flex items-center justify-center hover:bg-yellow-400 transition-colors">
       <span class="material-symbols-outlined">settings</span>

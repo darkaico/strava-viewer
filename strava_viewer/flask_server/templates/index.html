@@ -2,28 +2,9 @@
 {% block title %}My latest activities – Strava Viewer{% endblock %}
 
 {% block sidebar %}
-<aside class="w-full md:w-64 border-r-4 border-black bg-background-dark halftone-bg p-6 flex flex-col gap-8">
-  <div class="flex flex-col gap-2">
-    <div class="bg-white text-black p-3 comic-border -rotate-1 self-start">
-      <h1 class="text-lg font-bold uppercase">My activities</h1>
-      <p class="text-xs font-black italic text-primary">STRAVA</p>
-    </div>
-  </div>
-  <nav class="flex flex-col gap-4">
-    <a href="{{ url_for('index') }}" class="group flex items-center gap-4 p-3 bg-primary text-white comic-border -translate-x-2">
-      <span class="material-symbols-outlined">list</span>
-      <span class="font-bold uppercase tracking-tight italic">Activity list</span>
-    </a>
-    <a href="{{ url_for('dashboard') }}" class="group flex items-center gap-4 p-3 bg-white text-black comic-border hover:-translate-y-1 transition-transform">
-      <span class="material-symbols-outlined">monitoring</span>
-      <span class="font-bold uppercase tracking-tight">Dashboard</span>
-    </a>
-    <a href="{{ url_for('lab') }}" class="group flex items-center gap-4 p-3 bg-white text-black comic-border hover:-translate-y-1 transition-transform">
-      <span class="material-symbols-outlined">biotech</span>
-      <span class="font-bold uppercase tracking-tight">Data Lab</span>
-    </a>
-  </nav>
-</aside>
+{% set sidebar_title = "My activities" %}
+{% set sidebar_subtitle = "STRAVA" %}
+{% include '_sidebar.html' %}
 {% endblock %}
 
 {% block content %}
