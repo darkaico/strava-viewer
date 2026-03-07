@@ -1,4 +1,4 @@
-from strava_extensions.strava.utils import materialize_mapping_utils
+from strava_viewer.strava.utils import materialize_mapping_utils
 
 
 def test_get_icon_for_valid_activity():

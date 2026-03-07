@@ -3,10 +3,10 @@ from http import HTTPStatus
 
 import requests
 
-from strava_extensions.strava import settings
-from strava_extensions.strava.services.builder_service import BuilderService
-from strava_extensions.strava.utils.redis_client import get_redis_client
-from strava_extensions.utils.mixins import LoggerMixin
+from strava_viewer.strava import settings
+from strava_viewer.strava.services.builder_service import BuilderService
+from strava_viewer.strava.utils.redis_client import get_redis_client
+from strava_viewer.utils.mixins import LoggerMixin
 
 
 class StravaAPI(LoggerMixin):

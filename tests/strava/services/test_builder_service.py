@@ -1,4 +1,4 @@
-from strava_extensions.strava.services.builder_service import BuilderService
+from strava_viewer.strava.services.builder_service import BuilderService
 
 
 def test_club_activity_builder(json_club_activities):

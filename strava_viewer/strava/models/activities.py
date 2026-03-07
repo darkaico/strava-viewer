@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from strava_extensions.strava.utils import materialize_mapping_utils
+from strava_viewer.strava.utils import materialize_mapping_utils
 
 from .athletes import Athlete
 

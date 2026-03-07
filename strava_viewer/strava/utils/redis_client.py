@@ -1,6 +1,6 @@
 import redis
 
-from strava_extensions.strava import settings
+from strava_viewer.strava import settings
 
 
 def get_redis_client():

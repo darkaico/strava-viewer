@@ -1,4 +1,4 @@
-from strava_extensions import __version__
+from strava_viewer import __version__
 
 
 def test_version():

@@ -1,7 +1,7 @@
 from marshmallow import ValidationError
 
-from strava_extensions.strava.schemas.activities_schemas import SummaryActivitySchema
-from strava_extensions.utils import logger_utils
+from strava_viewer.strava.schemas.activities_schemas import SummaryActivitySchema
+from strava_viewer.utils import logger_utils
 
 
 class BuilderService:

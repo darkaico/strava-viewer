@@ -1,4 +1,4 @@
-from strava_extensions.utils import logger_utils
+from strava_viewer.utils import logger_utils
 
 
 class LoggerMixin:

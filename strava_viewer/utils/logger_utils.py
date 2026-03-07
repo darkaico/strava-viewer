@@ -1,7 +1,7 @@
 import logging
 import os
 
-from strava_extensions import BASE_DIR
+from strava_viewer import BASE_DIR
 
 
 def build_logger(logger_name):

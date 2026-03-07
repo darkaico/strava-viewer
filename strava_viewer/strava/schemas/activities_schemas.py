@@ -1,7 +1,7 @@
 from dacite import from_dict
 from marshmallow import Schema, fields, post_load
 
-from strava_extensions.strava.models.activities import SummaryActivity
+from strava_viewer.strava.models.activities import SummaryActivity
 
 from .athletes_schemas import AthleteSchema
 

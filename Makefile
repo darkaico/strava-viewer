@@ -1,17 +1,18 @@
 install:
-	poetry install
+	uv sync --all-extras
 
 test:
-	poetry run pytest
+	uv run pytest
 
 flask_start:
-	poetry run python -m strava_extensions.flask_server.main
+	uv run python -m strava_viewer.flask_server.main
 
 clean: ## Remove generated files.
 	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 
 update-packages:
-	poetry update
+	uv lock --upgrade
+	uv sync
 
 lint:
 	pre-commit run --all-files

@@ -26,7 +26,7 @@ def test_get_club_activities_client_error(strava_api, api_http_error_400):
         strava_api.get_club_activities(4)
 
 
-@patch("strava_extensions.strava.api.StravaAPI._refresh_token")
+@patch("strava_viewer.strava.api.StravaAPI._refresh_token")
 @patch.object(requests, "get")
 def test_get_club_activities_unauthorized(mock_get, mock_refresh_token, strava_api):
     mock_get.side_effect = [MockResponse(401), MockResponse(200, [])]

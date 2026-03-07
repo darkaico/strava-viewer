@@ -1,4 +1,4 @@
-from strava_extensions.strava.api import StravaAPI
+from strava_viewer.strava.api import StravaAPI
 
 
 def get_club_activities(club_id: int):

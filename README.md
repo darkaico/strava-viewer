@@ -21,9 +21,11 @@ STRAVA_API_REFRESH_TOKEN=<strava api refresh token>
 STRAVA_CLUB_ID=<strava club id>
 # Optional in case you want to test it locally, otherwise its being updated in docker-compose file
 REDIS_URL=redis://localhost:6379
+# Optional: port for the Flask server (default: 5000)
+FLASK_PORT=5000
 ```
 
-To make things easier to test in local env im using [python-dotenv](https://github.com/theskumar/python-dotenv) so you could create a new file called `.env` under `strava_extensions` folder (there is an `.env.example` you could us as example).
+To make things easier to test in local env im using [python-dotenv](https://github.com/theskumar/python-dotenv) so you could create a new file called `.env` under `strava_viewer` folder (there is an `.env.example` you could us as example).
 ## Start the App
 
 ### Docker
@@ -41,24 +43,36 @@ $ make up
 ```
 
 ### Local Development
-### Poetry
+### uv
 
-Im using [poetry](https://python-poetry.org/docs/) as dependency management, make sure you have it installed before following next steps.
+Im using [uv](https://docs.astral.sh/uv/) as dependency management, make sure you have it installed before following next steps.
 
 - Install dependencies
 
 ```shell
-poetry install
+uv sync --all-extras
 ```
 
 - Run Flask Project
 
 ```shell
-poetry run python strava_extensions/flask_server/main.py
+uv run python strava_viewer/flask_server/main.py
+```
+
+or using make
+
+```shell
+make flask_start
 ```
 
 - Run tests
 
 ```shell
-poetry run pytest
+uv run pytest
+```
+
+or using make
+
+```shell
+make test
 ```

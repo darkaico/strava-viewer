@@ -5,24 +5,17 @@ LABEL maintainer="darkaico@gmail.com"
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.2.0
+    UV_SYSTEM_PYTHON=1
 
-# System deps:
-RUN pip install "poetry==$POETRY_VERSION"
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
-COPY poetry.lock pyproject.toml /app/
+COPY uv.lock pyproject.toml /app/
 
-# Project initialization:
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+RUN uv sync --frozen --no-dev --no-install-project
 
 EXPOSE 5000
 
-# Creating folders, and files for a project:
 COPY ./ ./
 
-CMD ["poetry", "run", "python3", "-m", "strava_extensions.flask_server.main"]
+CMD ["python3", "-m", "strava_viewer.flask_server.main"]

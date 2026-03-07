@@ -5,7 +5,7 @@ import pytest
 import redis
 import requests
 
-from strava_extensions.strava.api import StravaAPI
+from strava_viewer.strava.api import StravaAPI
 from tests.fixtures import loaders
 
 
