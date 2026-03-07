@@ -1,0 +1,19 @@
+<header class="flex items-center justify-between border-b-4 border-black bg-primary px-6 py-4 sticky top-0 z-50">
+  <div class="flex items-center gap-3">
+    <div class="bg-white p-1 comic-border">
+      <span class="material-symbols-outlined text-black text-3xl font-bold">bolt</span>
+    </div>
+    <h2 class="text-black text-2xl font-black uppercase tracking-tighter italic">{{ header_title }}</h2>
+  </div>
+  <nav class="flex items-center gap-4">
+    <a href="{{ url_for('index') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'index' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Activity list</a>
+    <a href="{{ url_for('dashboard') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'dashboard' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Dashboard</a>
+    <a href="{{ url_for('lab') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'lab' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Data Lab</a>
+    <button class="bg-white text-black comic-border p-2 flex items-center justify-center hover:bg-yellow-400 transition-colors">
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+    <div class="size-10 comic-border bg-yellow-400 overflow-hidden">
+      <img class="w-full h-full object-cover" data-alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHv8MTt0TOL1t6TgJat7GYJwsa--TkHwvuq5nF5AcU8elzcjEelaI-y5qv9pQfDvUkoAtNxbYEIOX6eAiJt0-ul2vI7sLrZg5th0_TFwwEAxoAU2dN8gAztuxz7GRZqyg4uPEpv2IfJjLEQDWc1s3mcESF3SDL-9M4k2e3yPbo95tM9XCgXvvkNDmRwcZ0Iv5o93zOHbSQuCtRgamjLPLb7zB8KwpGVQC-82nfcQYPYcE117bIKmcZYSJTc_q1-nxfGDl--Pcb3Y"/>
+    </div>
+  </nav>
+</header>

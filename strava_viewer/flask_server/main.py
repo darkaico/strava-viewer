@@ -36,7 +36,13 @@ def index():
     except Exception as e:
         logger.exception("Failed to load activities")
         error = str(e)
-    return render_template("index.html", club_activities=activities, error=error)
+    return render_template(
+        "index.html",
+        club_activities=activities,
+        error=error,
+        active_nav="index",
+        header_title="Strava Viewer",
+    )
 
 
 def _format_moving_time(seconds: int) -> str:
@@ -70,6 +76,8 @@ def dashboard():
         chart_data_by_week=json.dumps(metrics["by_week"]),
         chart_data_by_type=json.dumps(metrics["by_type"]),
         error=error,
+        active_nav="dashboard",
+        header_title="Dashboard",
     )
 
 
@@ -94,6 +102,8 @@ def lab():
         chart_data_by_week=json.dumps(metrics["by_week"]),
         chart_data_by_type=json.dumps(metrics["by_type"]),
         error=error,
+        active_nav="lab",
+        header_title="Data Lab: Origins",
     )
 
 

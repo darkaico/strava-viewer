@@ -25,7 +25,7 @@ def test_dashboard_returns_200(client, mocker):
     )
     r = client.get("/dashboard")
     assert r.status_code == 200
-    assert b"Strava metrics" in r.data
-    assert b"Total distance" in r.data
-    assert b"Moving time" in r.data
-    assert b"Elevation gain" in r.data
+    assert b"Total Distance" in r.data
+    assert b"Moving Time" in r.data
+    assert b"Elevation Gain" in r.data
+    assert b"CHARTS" in r.data
