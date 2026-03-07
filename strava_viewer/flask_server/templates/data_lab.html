@@ -7,7 +7,7 @@ endblock %} {% block head_extra %}
 {% endblock %} {% block sidebar %} {% set sidebar_title = "Strava Lab" %} {% set
 sidebar_subtitle = "ENERGY SURGES" %} {% include '_sidebar.html' %} {% endblock
 %} {% block content %}
-<section class="flex-1 p-6 flex flex-col gap-6">
+<section class="flex-1 p-6 flex flex-col gap-6 w-full halftone-bg-primary">
   {% if error %}
   <div class="comic-panel bg-red-600 text-white p-4 comic-border">
     <p class="font-bold uppercase">Could not load activities</p>
