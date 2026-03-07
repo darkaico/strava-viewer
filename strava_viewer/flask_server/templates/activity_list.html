@@ -1,46 +1,45 @@
-{% extends "base.html" %}
-{% block title %}My latest activities – Strava Viewer{% endblock %}
-
-{% block sidebar %}
-{% set sidebar_title = "My activities" %}
-{% set sidebar_subtitle = "STRAVA" %}
-{% include '_sidebar.html' %}
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}My latest activities – Strava
+Viewer{% endblock %} {% block sidebar %} {% set sidebar_title = "My activities"
+%} {% set sidebar_subtitle = "STRAVA" %} {% include '_sidebar.html' %} {%
+endblock %} {% block content %}
 <section class="flex-1 p-6 flex flex-col gap-6">
   {% if error %}
   <div class="comic-panel bg-red-600 text-white p-4 comic-border">
     <p class="font-bold uppercase">Could not load activities</p>
     <p>{{ error }}</p>
   </div>
-  {% endif %}
-
-  {% if not error and not club_activities %}
+  {% endif %} {% if not error and not club_activities %}
   <div class="comic-panel bg-slate-200 dark:bg-slate-800 p-6 comic-border">
-    <p class="font-bold">No activities to show. If you expected data, check that Redis is running and look at the server console for errors.</p>
+    <p class="font-bold">
+      No activities to show. If you expected data, check that Redis is running
+      and look at the server console for errors.
+    </p>
   </div>
-  {% endif %}
-
-  {% if not error and club_activities %}
-  <div class="flex border-b-4 border-black bg-white/5 mb-4">
-    <h2 class="text-2xl font-black uppercase italic tracking-tighter px-4 py-2">Activity list</h2>
-  </div>
+  {% endif %} {% if not error and club_activities %}
   <div class="grid grid-cols-1 gap-4">
-  {% for club_activity in club_activities %}
-  <div class="comic-panel bg-white dark:bg-slate-800 flex flex-col md:flex-row border-4 border-black hover:-translate-y-1 transition-all overflow-visible">
-    <div class="p-4 md:p-6 flex flex-1 items-center gap-4">
-      <span class="material-symbols-outlined text-primary text-4xl">{{ club_activity.materialize_icon }}</span>
-      <div class="flex-1">
-        <h3 class="text-xl font-black italic text-black dark:text-white">{{ club_activity.name }}</h3>
-        <p class="text-sm font-bold uppercase text-slate-600 dark:text-slate-400">
-          {{ club_activity.activity_type }}
-          {% if club_activity.athlete.firstname %} · by {{ club_activity.athlete.firstname }}{% endif %}
-        </p>
+    {% for club_activity in club_activities %}
+    <div
+      class="comic-panel bg-white dark:bg-slate-800 flex flex-col md:flex-row border-4 border-black hover:-translate-y-1 transition-all overflow-visible"
+    >
+      <div class="p-4 md:p-6 flex flex-1 items-center gap-4">
+        <span class="material-symbols-outlined text-primary text-4xl"
+          >{{ club_activity.materialize_icon }}</span
+        >
+        <div class="flex-1">
+          <h3 class="text-xl font-black italic text-black dark:text-white">
+            {{ club_activity.name }}
+          </h3>
+          <p
+            class="text-sm font-bold uppercase text-slate-600 dark:text-slate-400"
+          >
+            {{ club_activity.activity_type }} {% if
+            club_activity.athlete.firstname %} · by {{
+            club_activity.athlete.firstname }}{% endif %}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-  {% endfor %}
+    {% endfor %}
   </div>
   {% endif %}
 </section>

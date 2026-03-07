@@ -1,16 +1,12 @@
-{% extends "base.html" %}
-{% block title %}Data Lab: Origins – Strava Viewer{% endblock %}
-{% block head_extra %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-{% endblock %}
-
-{% block sidebar %}
-{% set sidebar_title = "Strava Lab" %}
-{% set sidebar_subtitle = "ENERGY SURGES" %}
-{% include '_sidebar.html' %}
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Data Lab: Origins – Strava Viewer{%
+endblock %} {% block head_extra %}
+<script
+  src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+  crossorigin="anonymous"
+></script>
+{% endblock %} {% block sidebar %} {% set sidebar_title = "Strava Lab" %} {% set
+sidebar_subtitle = "ENERGY SURGES" %} {% include '_sidebar.html' %} {% endblock
+%} {% block content %}
 <section class="flex-1 p-6 flex flex-col gap-6">
   {% if error %}
   <div class="comic-panel bg-red-600 text-white p-4 comic-border">
@@ -19,111 +15,179 @@
   </div>
   {% endif %}
 
-  <div class="flex border-b-4 border-black bg-white/5">
-    <a href="{{ url_for('index') }}" class="px-8 py-3 text-slate-400 hover:text-primary font-black uppercase italic tracking-widest text-sm">Activity Log</a>
-    <a href="{{ url_for('dashboard') }}" class="px-8 py-3 text-slate-400 hover:text-primary font-black uppercase italic tracking-widest text-sm">Deep Insights</a>
-    <a href="{{ url_for('lab') }}" class="px-8 py-3 bg-black text-white font-black uppercase italic tracking-widest text-sm">Energy Surge</a>
-  </div>
-
   <div class="grid grid-cols-1 gap-6">
-    <div class="comic-panel min-h-[400px] bg-slate-900 flex flex-col relative group">
-      <div class="absolute top-4 left-4 z-20 bg-primary text-white px-6 py-2 comic-border -rotate-2">
-        <h2 class="text-2xl font-black uppercase tracking-tighter italic">Weekly Energy Surge</h2>
+    <div
+      class="comic-panel min-h-[400px] bg-slate-900 flex flex-col relative group"
+    >
+      <div
+        class="absolute top-4 left-4 z-20 bg-primary text-white px-6 py-2 comic-border -rotate-2"
+      >
+        <h2 class="text-2xl font-black uppercase tracking-tighter italic">
+          Weekly Energy Surge
+        </h2>
       </div>
       <div class="flex-1 p-6 pt-16 relative">
-        <div class="w-full h-64 relative comic-border bg-slate-800 flex items-center justify-center overflow-hidden">
+        <div
+          class="w-full h-64 relative comic-border bg-slate-800 flex items-center justify-center overflow-hidden"
+        >
           <canvas id="chartEnergySurge"></canvas>
         </div>
-        <p class="text-slate-400 text-sm font-bold mt-4">Distance (km) by week – your Strava energy output.</p>
+        <p class="text-slate-400 text-sm font-bold mt-4">
+          Distance (km) by week – your Strava energy output.
+        </p>
       </div>
     </div>
 
-    <div class="p-6 bg-white dark:bg-slate-800 border-t-4 border-black grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center">
-        <span class="text-xs font-black uppercase text-slate-500">Distance</span>
-        <span class="text-2xl font-black italic text-primary tracking-tighter">{{ metrics.totals.total_distance_km }} KM</span>
+    <div
+      class="p-6 bg-white dark:bg-slate-800 border-t-4 border-black grid grid-cols-2 md:grid-cols-4 gap-4"
+    >
+      <div
+        class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center"
+      >
+        <span class="text-xs font-black uppercase text-slate-500"
+          >Distance</span
+        >
+        <span class="text-2xl font-black italic text-primary tracking-tighter"
+          >{{ metrics.totals.total_distance_km }} KM</span
+        >
       </div>
-      <div class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center">
-        <span class="text-xs font-black uppercase text-slate-500">Elevation</span>
-        <span class="text-2xl font-black italic text-yellow-500 tracking-tighter">{{ metrics.totals.total_elevation_gain_m }} M</span>
+      <div
+        class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center"
+      >
+        <span class="text-xs font-black uppercase text-slate-500"
+          >Elevation</span
+        >
+        <span
+          class="text-2xl font-black italic text-yellow-500 tracking-tighter"
+          >{{ metrics.totals.total_elevation_gain_m }} M</span
+        >
       </div>
-      <div class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center">
-        <span class="text-xs font-black uppercase text-slate-500">Intensity</span>
-        <span class="text-2xl font-black italic text-red-500 tracking-tighter">{{ metrics.totals.activity_count }} activities</span>
+      <div
+        class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center"
+      >
+        <span class="text-xs font-black uppercase text-slate-500"
+          >Intensity</span
+        >
+        <span class="text-2xl font-black italic text-red-500 tracking-tighter"
+          >{{ metrics.totals.activity_count }} activities</span
+        >
       </div>
-      <div class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center">
-        <span class="text-xs font-black uppercase text-slate-500">Duration</span>
-        <span class="text-2xl font-black italic text-blue-500 tracking-tighter">{{ metrics.totals.total_moving_time_formatted }}</span>
+      <div
+        class="comic-border bg-slate-100 dark:bg-slate-900 p-4 flex flex-col items-center"
+      >
+        <span class="text-xs font-black uppercase text-slate-500"
+          >Duration</span
+        >
+        <span class="text-2xl font-black italic text-blue-500 tracking-tighter"
+          >{{ metrics.totals.total_moving_time_formatted }}</span
+        >
       </div>
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="comic-panel bg-primary p-6 comic-border text-white flex flex-col gap-3">
+    <div
+      class="comic-panel bg-primary p-6 comic-border text-white flex flex-col gap-3"
+    >
       <div class="flex justify-between items-start">
-        <h3 class="font-black uppercase italic tracking-tighter text-xl leading-none">Vitals Monitor</h3>
-        <span class="material-symbols-outlined text-black font-bold">ecg_heart</span>
+        <h3
+          class="font-black uppercase italic tracking-tighter text-xl leading-none"
+        >
+          Vitals Monitor
+        </h3>
+        <span class="material-symbols-outlined text-black font-bold"
+          >ecg_heart</span
+        >
       </div>
-      <p class="text-sm font-bold leading-tight">Strava data synced. Totals: {{ metrics.totals.activity_count }} activities, {{ metrics.totals.total_distance_km }} km.</p>
+      <p class="text-sm font-bold leading-tight">
+        Strava data synced. Totals: {{ metrics.totals.activity_count }}
+        activities, {{ metrics.totals.total_distance_km }} km.
+      </p>
     </div>
-    <div class="comic-panel bg-slate-900 p-6 comic-border text-white flex flex-col gap-3 relative">
+    <div
+      class="comic-panel bg-slate-900 p-6 comic-border text-white flex flex-col gap-3 relative"
+    >
       <div class="flex justify-between items-start">
-        <h3 class="font-black uppercase italic tracking-tighter text-xl leading-none">Tech Upgrades</h3>
-        <span class="material-symbols-outlined text-primary font-bold">rocket_launch</span>
+        <h3
+          class="font-black uppercase italic tracking-tighter text-xl leading-none"
+        >
+          Tech Upgrades
+        </h3>
+        <span class="material-symbols-outlined text-primary font-bold"
+          >rocket_launch</span
+        >
       </div>
-      <p class="text-sm font-bold">View <a href="{{ url_for('dashboard') }}" class="text-primary underline">Dashboard</a> for charts by type and week.</p>
+      <p class="text-sm font-bold">
+        View
+        <a href="{{ url_for('dashboard') }}" class="text-primary underline"
+          >Dashboard</a
+        >
+        for charts by type and week.
+      </p>
     </div>
   </div>
 </section>
-{% endblock %}
-
-{% block footer %}
+{% endblock %} {% block footer %}
 <footer class="bg-black text-white p-4 border-t-4 border-black">
-  <div class="flex flex-col md:flex-row justify-between items-center gap-4 px-6">
-    <p class="text-xs font-black italic uppercase tracking-tighter">Strava Lab: Data Lab Origins – Energy Surges</p>
+  <div
+    class="flex flex-col md:flex-row justify-between items-center gap-4 px-6"
+  >
+    <p class="text-xs font-black italic uppercase tracking-tighter">
+      Strava Lab: Data Lab Origins – Energy Surges
+    </p>
     <div class="flex gap-6">
-      <a href="{{ url_for('dashboard') }}" class="text-xs font-bold uppercase hover:text-primary cursor-pointer">Dashboard</a>
-      <a href="{{ url_for('index') }}" class="text-xs font-bold uppercase hover:text-primary cursor-pointer">Activity list</a>
-      <a href="{{ url_for('lab') }}" class="text-xs font-bold uppercase hover:text-primary cursor-pointer">Data Lab</a>
+      <a
+        href="{{ url_for('dashboard') }}"
+        class="text-xs font-bold uppercase hover:text-primary cursor-pointer"
+        >Dashboard</a
+      >
+      <a
+        href="{{ url_for('activity_list') }}"
+        class="text-xs font-bold uppercase hover:text-primary cursor-pointer"
+        >Activity list</a
+      >
+      <a
+        href="{{ url_for('lab') }}"
+        class="text-xs font-bold uppercase hover:text-primary cursor-pointer"
+        >Data Lab</a
+      >
     </div>
   </div>
 </footer>
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
-(function () {
-  const byWeekRaw = {{ chart_data_by_week | safe }};
-  const canvas = document.getElementById('chartEnergySurge');
-  if (!canvas) return;
+  (function () {
+    const byWeekRaw = {{ chart_data_by_week | safe }};
+    const canvas = document.getElementById('chartEnergySurge');
+    if (!canvas) return;
 
-  if (byWeekRaw.length > 0) {
-    new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: byWeekRaw.map(function (d) { return d.week_label; }),
-        datasets: [{
-          label: 'Distance (km)',
-          data: byWeekRaw.map(function (d) { return d.distance_km; }),
-          backgroundColor: 'rgba(238, 43, 43, 0.7)',
-          borderColor: 'rgb(238, 43, 43)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: true }
+    if (byWeekRaw.length > 0) {
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: byWeekRaw.map(function (d) { return d.week_label; }),
+          datasets: [{
+            label: 'Distance (km)',
+            data: byWeekRaw.map(function (d) { return d.distance_km; }),
+            backgroundColor: 'rgba(238, 43, 43, 0.7)',
+            borderColor: 'rgb(238, 43, 43)',
+            borderWidth: 1
+          }]
         },
-        plugins: {
-          legend: { display: false }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true }
+          },
+          plugins: {
+            legend: { display: false }
+          }
         }
-      }
-    });
-  } else {
-    canvas.parentNode.innerHTML = '<p class="text-slate-400 font-bold p-4">No weekly data yet. Add activities with dates to see energy surges.</p>';
-  }
-})();
+      });
+    } else {
+      canvas.parentNode.innerHTML = '<p class="text-slate-400 font-bold p-4">No weekly data yet. Add activities with dates to see energy surges.</p>';
+    }
+  })();
 </script>
 {% endblock %}

@@ -10,9 +10,9 @@
       <span class="material-symbols-outlined">monitoring</span>
       <span class="font-bold uppercase tracking-tight {% if active_nav == 'dashboard' %}italic{% endif %}">Dashboard</span>
     </a>
-    <a href="{{ url_for('index') }}" class="group flex items-center gap-4 p-3 comic-border transition-transform {% if active_nav == 'index' %}bg-primary text-white -translate-x-2{% else %}bg-white text-black hover:-translate-y-1{% endif %}">
+    <a href="{{ url_for('activity_list') }}" class="group flex items-center gap-4 p-3 comic-border transition-transform {% if active_nav == 'activity_list' %}bg-primary text-white -translate-x-2{% else %}bg-white text-black hover:-translate-y-1{% endif %}">
       <span class="material-symbols-outlined">list</span>
-      <span class="font-bold uppercase tracking-tight {% if active_nav == 'index' %}italic{% endif %}">Activity list</span>
+      <span class="font-bold uppercase tracking-tight {% if active_nav == 'activity_list' %}italic{% endif %}">Activity list</span>
     </a>
     <a href="{{ url_for('lab') }}" class="group flex items-center gap-4 p-3 comic-border transition-transform {% if active_nav == 'lab' %}bg-primary text-white -translate-x-2{% else %}bg-white text-black hover:-translate-y-1{% endif %}">
       <span class="material-symbols-outlined">biotech</span>

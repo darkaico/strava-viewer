@@ -26,8 +26,16 @@ csrf.init_app(app)
 
 
 @app.route("/")
-@app.route("/index")
 def index():
+    return render_template(
+        "index.html",
+        active_nav="home",
+        header_title="Strava Viewer",
+    )
+
+
+@app.route("/activity-list")
+def activity_list():
     error = None
     activities = []
     try:
@@ -40,7 +48,7 @@ def index():
         "activity_list.html",
         club_activities=activities,
         error=error,
-        active_nav="index",
+        active_nav="activity_list",
         header_title="Strava Viewer",
     )
 
