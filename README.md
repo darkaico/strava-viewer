@@ -1,77 +1,77 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=darkaico_strava-viewer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=darkaico_strava-viewer)
-
 # Strava Viewer
 
-App that fetchs information from strava and show in a simple flask application.
+App that fetches information from Strava and shows it in a simple Flask application.
 
 ## Note
 
-I'm using redis to store Strava access token and set an expiration time. Could it be easily change to just store it plain during app run in case you want to test it without it.
+Redis is used to store the Strava access token with an expiration time. You can change this to store it in memory during app run if you want to test without Redis.
+
+## Setup
 
 ### Strava API
 
-First of all you need Strava API credentials could be found [here](https://developers.strava.com/).
+You need Strava API credentials from [developers.strava.com](https://developers.strava.com/).
 
-Once you got it you should set the following environment variables
+Set the following environment variables:
 
 ```shell
-STRAVA_API_CLIENT_ID=<strava api client id>
-STRAVA_API_CLIENT_SECRET=<strava api client secret>
-STRAVA_API_REFRESH_TOKEN=<strava api refresh token>
-STRAVA_CLUB_ID=<strava club id>
-# Optional in case you want to test it locally, otherwise its being updated in docker-compose file
+STRAVA_API_CLIENT_ID=<your client id>
+STRAVA_API_CLIENT_SECRET=<your client secret>
+STRAVA_API_REFRESH_TOKEN=<your refresh token>
+STRAVA_CLUB_ID=<your club id>
+
+# Optional: for local dev (docker-compose sets this for Docker)
 REDIS_URL=redis://localhost:6379
-# Optional: port for the Flask server (default: 5000)
+
+# Optional: Flask server port (default: 5000)
 FLASK_PORT=5000
 ```
 
-To make things easier to test in local env im using [python-dotenv](https://github.com/theskumar/python-dotenv) so you could create a new file called `.env` under `strava_viewer` folder (there is an `.env.example` you could us as example).
-## Start the App
+For local development, use [python-dotenv](https://github.com/theskumar/python-dotenv): create a `.env` file under the `strava_viewer` folder (see `.env.example`).
+
+## Running the app
 
 ### Docker
 
-Start the app by just calling
-
 ```bash
-$ docker-compose up
+docker-compose up
 ```
 
-or using make
+or:
 
 ```bash
-$ make up
+make up
 ```
 
-### Local Development
-### uv
+### Local development
 
-Im using [uv](https://docs.astral.sh/uv/) as dependency management, make sure you have it installed before following next steps.
+Install [uv](https://docs.astral.sh/uv/), then:
 
-- Install dependencies
+**Install dependencies**
 
 ```shell
 uv sync --all-extras
 ```
 
-- Run Flask Project
+**Run the app**
 
 ```shell
 uv run python strava_viewer/flask_server/main.py
 ```
 
-or using make
+or:
 
 ```shell
 make flask_start
 ```
 
-- Run tests
+**Run tests**
 
 ```shell
 uv run pytest
 ```
 
-or using make
+or:
 
 ```shell
 make test
