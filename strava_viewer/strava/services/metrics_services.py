@@ -78,9 +78,7 @@ def _parse_week_key(iso_date_str: str) -> str | None:
         return None
     try:
         # Handle both "2024-03-07T12:00:00Z" and "2024-03-07"
-        dt = datetime.fromisoformat(
-            iso_date_str.replace("Z", "+00:00")[:10]
-        )
+        dt = datetime.fromisoformat(iso_date_str.replace("Z", "+00:00")[:10])
         return dt.strftime("%Y-W%W")
     except (ValueError, TypeError):
         return None

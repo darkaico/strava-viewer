@@ -4,7 +4,7 @@ install:
 test:
 	uv run pytest
 
-flask_start:
+start:
 	uv run python -m strava_viewer.flask_server.main
 
 clean: ## Remove generated files.
@@ -19,5 +19,5 @@ lint:
 
 # Docker
 
-up:
+docker-up:
 	docker-compose up

@@ -32,9 +32,7 @@ def index():
     except Exception as e:
         logger.exception("Failed to load activities")
         error = str(e)
-    return render_template(
-        "index.html", club_activities=activities, error=error
-    )
+    return render_template("index.html", club_activities=activities, error=error)
 
 
 def _format_moving_time(seconds: int) -> str:

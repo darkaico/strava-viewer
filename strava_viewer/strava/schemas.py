@@ -7,7 +7,6 @@ from strava_viewer.strava.dto import Athlete, SummaryActivity
 
 
 class AthleteSchema(Schema):
-
     class Meta:
         unknown = EXCLUDE
 
@@ -21,7 +20,6 @@ class AthleteSchema(Schema):
 
 
 class SummaryActivitySchema(Schema):
-
     class Meta:
         unknown = EXCLUDE
 
