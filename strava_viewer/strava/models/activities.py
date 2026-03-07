@@ -18,6 +18,7 @@ class SummaryActivity:
     total_elevation_gain: float
     activity_type: str
     workout_type: Optional[int] = None
+    start_date: Optional[str] = None  # ISO 8601 from API, for time-based metrics
 
     @property
     def materialize_icon(self):

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Dashboard – Strava Viewer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <meta content="text/html; charset=utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Strava metrics</h1>
+      <p>
+        <a href="{{ url_for('index') }}">Activity list</a>
+        &middot;
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      </p>
+
+      {% if error %}
+      <div class="card red lighten-4">
+        <div class="card-content">
+          <span class="card-title">Could not load activities</span>
+          <p>{{ error }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="row">
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Total distance</span>
+              <p class="flow-text">{{ metrics.totals.total_distance_km }} km</p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Moving time</span>
+              <p class="flow-text">{{ metrics.totals.total_moving_time_formatted }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Elevation gain</span>
+              <p class="flow-text">{{ metrics.totals.total_elevation_gain_m }} m</p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Activities</span>
+              <p class="flow-text">{{ metrics.totals.activity_count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12 m12 l6">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Distance by week</span>
+              <div class="chart-container" style="position: relative; height: 280px;">
+                <canvas id="chartByWeek"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m12 l6">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Activities by type</span>
+              <div class="chart-container" style="position: relative; height: 280px;">
+                <canvas id="chartByType"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        const byWeekRaw = {{ chart_data_by_week | safe }};
+        const byTypeRaw = {{ chart_data_by_type | safe }};
+
+        if (byWeekRaw.length > 0) {
+          new Chart(document.getElementById('chartByWeek'), {
+            type: 'bar',
+            data: {
+              labels: byWeekRaw.map(function (d) { return d.week_label; }),
+              datasets: [{
+                label: 'Distance (km)',
+                data: byWeekRaw.map(function (d) { return d.distance_km; }),
+                backgroundColor: 'rgba(252, 76, 2, 0.7)',
+                borderColor: 'rgb(252, 76, 2)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: { beginAtZero: true }
+              }
+            }
+          });
+        } else {
+          document.getElementById('chartByWeek').parentNode.innerHTML = '<p class="grey-text">No dated activities to show.</p>';
+        }
+
+        if (byTypeRaw.length > 0) {
+          new Chart(document.getElementById('chartByType'), {
+            type: 'pie',
+            data: {
+              labels: byTypeRaw.map(function (d) { return d.activity_type; }),
+              datasets: [{
+                data: byTypeRaw.map(function (d) { return d.count; }),
+                backgroundColor: [
+                  'rgba(252, 76, 2, 0.8)',
+                  'rgba(255, 152, 0, 0.8)',
+                  'rgba(76, 175, 80, 0.8)',
+                  'rgba(33, 150, 243, 0.8)',
+                  'rgba(156, 39, 176, 0.8)',
+                  'rgba(0, 188, 212, 0.8)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false
+            }
+          });
+        } else {
+          document.getElementById('chartByType').parentNode.innerHTML = '<p class="grey-text">No activities to show.</p>';
+        }
+      })();
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
+      integrity="sha512-NiWqa2rceHnN3Z5j6mSAvbwwg3tiwVNxiAQaaSMSXnRRDh5C2mk/+sKQRw8qjV1vN4nf8iK2a0b048PnHbyx+Q=="
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

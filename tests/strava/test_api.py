@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 import pytest
 import requests
+from marshmallow import ValidationError
 
 from tests.conftest import MockResponse
 
@@ -38,10 +39,18 @@ def test_get_club_activities_unauthorized(mock_get, mock_refresh_token, strava_a
 
 
 def test_get_club_activities_response_error(strava_api, api_with_invalid_activities):
+    with pytest.raises(ValidationError):
+        strava_api.get_club_activities(4)
 
-    activities = strava_api.get_club_activities(4)
 
-    assert len(activities) == 0
+def test_get_athlete_activities(strava_api, api_with_activities):
+    activities = strava_api.get_athlete_activities(after=0, per_page=200)
+    assert len(activities) == 3
+
+
+def test_get_athlete_activities_with_before(strava_api, api_with_activities):
+    activities = strava_api.get_athlete_activities(after=0, before=9999999999, per_page=30)
+    assert len(activities) == 3
 
 
 @patch.object(requests, "post")

@@ -1,3 +1,4 @@
+import time
 from functools import cached_property
 from http import HTTPStatus
 
@@ -29,7 +30,10 @@ class StravaAPI(LoggerMixin):
         if not self.redis_client.exists(self.access_token_redis_key):
             self._refresh_token()
 
-        return self.redis_client.get(self.access_token_redis_key)
+        token = self.redis_client.get(self.access_token_redis_key)
+        if isinstance(token, bytes):
+            token = token.decode("utf-8")
+        return token or ""
 
     def _refresh_token(self):
         data = {
@@ -41,28 +45,55 @@ class StravaAPI(LoggerMixin):
         response = requests.post(self.REFRESH_TOKEN_URL, data=data)
 
         if response.status_code != HTTPStatus.OK:
+            if response.status_code == HTTPStatus.UNAUTHORIZED:
+                raise requests.exceptions.HTTPError(
+                    "Strava refresh token expired or invalid. Re-authorize the app at "
+                    "https://www.strava.com/settings/api (or your app's OAuth URL), "
+                    "then set STRAVA_API_REFRESH_TOKEN in .env with the new refresh token. "
+                    "Ensure the app has activity:read scope.",
+                    response=response,
+                )
             response.raise_for_status()
 
         json_response = response.json()
         expires_at = int(json_response["expires_at"])
+        # Redis ex= expects seconds until expiry; Strava gives absolute Unix timestamp
+        ttl_seconds = max(1, expires_at - int(time.time()))
         self.redis_client.set(
-            self.access_token_redis_key, json_response["access_token"], ex=expires_at
+            self.access_token_redis_key,
+            json_response["access_token"],
+            ex=ttl_seconds,
         )
 
-    def get(self, resource_url: str):
+    def get(self, resource_url: str, params=None):
         url = f"{self.API_URL}/{resource_url}"
+        request_params = dict(params) if params else {}
+        request_params["access_token"] = self.get_access_token()
 
-        response = requests.get(url, params={"access_token": self.get_access_token()})
+        response = requests.get(url, params=request_params)
 
         if response.status_code == HTTPStatus.UNAUTHORIZED:
+            self.redis_client.delete(self.access_token_redis_key)
             self._refresh_token()
-            response = requests.get(url, params={"access_token": self.get_access_token()})
+            request_params["access_token"] = self.get_access_token()
+            response = requests.get(url, params=request_params)
 
         if response.status_code != 200:
             self.logger.error(response)
             response.raise_for_status()
 
         return response.json()
+
+    def get_athlete_activities(self, after=None, before=None, per_page=200):
+        """List the authenticated athlete's activities. Requires activity:read scope."""
+        resource_url = "athlete/activities"
+        params = {"per_page": min(per_page, 200)}
+        if after is not None:
+            params["after"] = int(after)
+        if before is not None:
+            params["before"] = int(before)
+        json_activities = self.get(resource_url, params=params)
+        return BuilderService.build_summary_activities(json_activities)
 
     def get_club_activities(self, club_id: int):
         resource_url = f"clubs/{club_id}/activities"

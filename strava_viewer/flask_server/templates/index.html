@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Strava Viewer</title>
+    <title>My latest activities – Strava Viewer</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
@@ -14,7 +14,28 @@
   </head>
   <body>
     <div class="container">
-      <h1>Hello!</h1>
+      <h1>My latest activities</h1>
+      <p>
+        <a href="{{ url_for('index') }}">Activity list</a>
+        &middot;
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      </p>
+
+      {% if error %}
+      <div class="card red lighten-4">
+        <div class="card-content">
+          <span class="card-title">Could not load activities</span>
+          <p>{{ error }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if not error and not club_activities %}
+      <p class="flow-text">
+        No activities to show. If you expected data, check that Redis is running
+        and look at the server console for errors.
+      </p>
+      {% endif %}
 
       <ul class="collection">
         {% for club_activity in club_activities %}
@@ -25,7 +46,7 @@
           <span class="title">{{club_activity.name}}</span>
           <p>
             {{club_activity.activity_type}} <br />
-            by {{club_activity.athlete.firstname}}
+            {% if club_activity.athlete.firstname %}by {{club_activity.athlete.firstname}}{% endif %}
           </p>
         </li>
         {% endfor %}

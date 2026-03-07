@@ -35,6 +35,9 @@ class MockRedis:
     def exists(self, key):
         return key in self.storage
 
+    def delete(self, key):
+        self.storage.pop(key, None)
+
 
 @pytest.fixture(autouse=True)
 def mock_redis(mocker):

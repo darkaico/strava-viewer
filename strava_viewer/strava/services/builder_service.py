@@ -16,7 +16,8 @@ class BuilderService:
 
         try:
             result = SummaryActivitySchema(many=True).load(json_summary_activities)
-        except (ValidationError, TypeError) as err:
-            cls.logger.error(err)
+        except (ValidationError, TypeError):
+            cls.logger.exception("Activity list validation failed")
+            raise
 
         return result
