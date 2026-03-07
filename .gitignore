@@ -51,6 +51,9 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# Local-only draft (not for GitHub)
+docs/medium_article.md
+
 # PyBuilder
 target/
 
