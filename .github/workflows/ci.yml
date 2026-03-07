@@ -1,12 +1,10 @@
-name: Strava Viewer CI/CD
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,66 +12,47 @@ concurrency:
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup python environment
-        uses: actions/setup-python@v2
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
         with:
-          python-version: 3.11
-      - name: Lint check
-        uses: pre-commit/action@v3.0.0
+          python-version: "3.11"
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
 
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
         with:
-          python-version: 3.11
+          python-version: "3.11"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v5
         with:
-          version: "latest"
+          version: "0.5.11"
 
-      - name: Load cached venv
-        id: cached-uv-dependencies
-        uses: actions/cache@v4
+      - name: Cache venv
+        id: cache-venv
+        uses: actions/cache@v4.0.2
         with:
           path: .venv
           key: uv-${{ runner.os }}-${{ hashFiles('**/uv.lock') }}
 
       - name: Install dependencies
+        if: steps.cache-venv.outputs.cache-hit != 'true'
         run: uv sync --all-extras
-        if: steps.cached-uv-dependencies.outputs.cache-hit != 'true'
 
       - name: Run tests
         run: make test
-
-      - name: fix code coverage paths
-        run: |
-          sed -i 's/\/home\/runner\/work\/strava-viewer\/strava-viewer\//\/github\/workspace\//g' cover/coverage.xml
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  notify:
-    if: contains(github.ref, 'refs/heads/main')
-    needs: [lint, test]
-    name: Slack Notification
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Strava Viewer updated in main branch :rocket:"
-          SLACK_USERNAME: "corgi-policia"
-          SLACK_ICON: https://icon-library.com/images/corgi-icon/corgi-icon-2.jpg
