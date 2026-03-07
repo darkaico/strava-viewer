@@ -1,6 +1,6 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=darkaico_strava-extensions&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=darkaico_strava-extensions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=darkaico_strava-viewer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=darkaico_strava-viewer)
 
-# Strava Extensions
+# Strava Viewer
 
 App that fetchs information from strava and show in a simple flask application.
 

@@ -1,4 +1,4 @@
-name: Strava Extensions CI/CD
+name: Strava Viewer CI/CD
 
 on:
   push:
@@ -60,7 +60,7 @@ jobs:
 
       - name: fix code coverage paths
         run: |
-          sed -i 's/\/home\/runner\/work\/strava-extensions\/strava-extensions\//\/github\/workspace\//g' cover/coverage.xml
+          sed -i 's/\/home\/runner\/work\/strava-viewer\/strava-viewer\//\/github\/workspace\//g' cover/coverage.xml
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -79,6 +79,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Strava Extension updated in main branch :rocket:"
+          SLACK_MESSAGE: "Strava Viewer updated in main branch :rocket:"
           SLACK_USERNAME: "corgi-policia"
           SLACK_ICON: https://icon-library.com/images/corgi-icon/corgi-icon-2.jpg
