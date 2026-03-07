@@ -9,11 +9,15 @@ from dotenv import load_dotenv
 _project_root = Path(__file__).resolve().parent.parent.parent
 load_dotenv(_project_root / ".env")
 
-from flask import Flask, render_template
-from flask_wtf import CSRFProtect
+from flask import Flask, render_template  # noqa: E402
+from flask_wtf import CSRFProtect  # noqa: E402
 
-from strava_viewer.strava.services.activities_services import get_activities_for_view
-from strava_viewer.strava.services.metrics_services import get_dashboard_metrics
+from strava_viewer.strava.services.activities_services import (  # noqa: E402
+    get_activities_for_view,
+)
+from strava_viewer.strava.services.metrics_services import (  # noqa: E402
+    get_dashboard_metrics,
+)
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
