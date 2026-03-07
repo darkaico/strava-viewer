@@ -1,156 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Dashboard – Strava Viewer</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <meta content="text/html; charset=utf-8" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Strava metrics</h1>
-      <p>
-        <a href="{{ url_for('index') }}">Activity list</a>
-        &middot;
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-      </p>
 
-      {% if error %}
-      <div class="card red lighten-4">
-        <div class="card-content">
-          <span class="card-title">Could not load activities</span>
-          <p>{{ error }}</p>
-        </div>
-      </div>
-      {% endif %}
-
-      <div class="row">
-        <div class="col s12 m6 l3">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">Total distance</span>
-              <p class="flow-text">{{ metrics.totals.total_distance_km }} km</p>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m6 l3">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">Moving time</span>
-              <p class="flow-text">{{ metrics.totals.total_moving_time_formatted }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m6 l3">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">Elevation gain</span>
-              <p class="flow-text">{{ metrics.totals.total_elevation_gain_m }} m</p>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m6 l3">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">Activities</span>
-              <p class="flow-text">{{ metrics.totals.activity_count }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col s12 m12 l6">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">Distance by week</span>
-              <div class="chart-container" style="position: relative; height: 280px;">
-                <canvas id="chartByWeek"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m12 l6">
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">Activities by type</span>
-              <div class="chart-container" style="position: relative; height: 280px;">
-                <canvas id="chartByType"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script>
-      (function () {
-        const byWeekRaw = {{ chart_data_by_week | safe }};
-        const byTypeRaw = {{ chart_data_by_type | safe }};
-
-        if (byWeekRaw.length > 0) {
-          new Chart(document.getElementById('chartByWeek'), {
-            type: 'bar',
-            data: {
-              labels: byWeekRaw.map(function (d) { return d.week_label; }),
-              datasets: [{
-                label: 'Distance (km)',
-                data: byWeekRaw.map(function (d) { return d.distance_km; }),
-                backgroundColor: 'rgba(252, 76, 2, 0.7)',
-                borderColor: 'rgb(252, 76, 2)',
-                borderWidth: 1
-              }]
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard – Strava Viewer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ee2b2b",
+                        "accent-yellow": "#fde047",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px"},
+                },
             },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                y: { beginAtZero: true }
-              }
-            }
-          });
-        } else {
-          document.getElementById('chartByWeek').parentNode.innerHTML = '<p class="grey-text">No dated activities to show.</p>';
         }
-
-        if (byTypeRaw.length > 0) {
-          new Chart(document.getElementById('chartByType'), {
-            type: 'pie',
-            data: {
-              labels: byTypeRaw.map(function (d) { return d.activity_type; }),
-              datasets: [{
-                data: byTypeRaw.map(function (d) { return d.count; }),
-                backgroundColor: [
-                  'rgba(252, 76, 2, 0.8)',
-                  'rgba(255, 152, 0, 0.8)',
-                  'rgba(76, 175, 80, 0.8)',
-                  'rgba(33, 150, 243, 0.8)',
-                  'rgba(156, 39, 176, 0.8)',
-                  'rgba(0, 188, 212, 0.8)'
-                ],
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false
-            }
-          });
-        } else {
-          document.getElementById('chartByType').parentNode.innerHTML = '<p class="grey-text">No activities to show.</p>';
-        }
-      })();
     </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
-      integrity="sha512-NiWqa2rceHnN3Z5j6mSAvbwwg3tiwVNxiAQaaSMSXnRRDh5C2mk/+sKQRw8qjV1vN4nf8iK2a0b048PnHbyx+Q=="
-      crossorigin="anonymous"
-    ></script>
-  </body>
-</html>
+<style>
+        .comic-border {
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+        }
+        .comic-panel {
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #000;
+            transform: skew(-1deg);
+        }
+        .speech-bubble {
+            position: relative;
+            background: #fff;
+            border: 3px solid #000;
+            border-radius: 20px;
+            padding: 10px;
+        }
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            width: 0;
+            height: 0;
+            border: 15px solid transparent;
+            border-top-color: #000;
+            border-bottom: 0;
+            border-left: 0;
+            margin-left: -7.5px;
+            margin-bottom: -15px;
+        }
+        .action-text {
+            text-shadow: 2px 2px 0px #ee2b2b, 4px 4px 0px #000;
+            font-style: italic;
+            text-transform: uppercase;
+        }
+        .halftone-bg {
+            background-image: radial-gradient(rgba(238, 43, 43, 0.2) 15%, transparent 16%);
+            background-size: 8px 8px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="relative flex min-h-screen flex-col">
+<!-- Navigation -->
+<header class="sticky top-0 z-50 bg-background-dark border-b-4 border-black px-4 md:px-10 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 comic-border rotate-3">
+<span class="material-symbols-outlined text-white text-3xl font-bold">bolt</span>
+</div>
+<h2 class="text-white text-3xl font-black italic tracking-tighter action-text">STORY OF MY STRIDES</h2>
+</div>
+<nav class="flex items-center gap-4">
+<a href="{{ url_for('index') }}" class="text-accent-yellow hover:underline font-bold uppercase text-sm">Activity list</a>
+<a href="{{ url_for('dashboard') }}" class="text-accent-yellow hover:underline font-bold uppercase text-sm">Dashboard</a>
+<button class="bg-accent-yellow text-black font-bold px-4 py-2 comic-border hover:translate-y-1 transition-transform">
+<span class="material-symbols-outlined align-middle">notifications</span>
+</button>
+<div class="size-12 rounded-full comic-border bg-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Comic style hero avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVtjzVCUTIJkEcTwM75Jg-AgsnzlUdXGZ3gCN_WCz88MaFpBMc_xsg71K5tG4J_yqIdRGOy2SORyHdHiA9OTvJsp5ATEh0QzklFoUMUGHPGfgfdXgqjUdk9MR09ghExjK9WmXl_c--F8OMmL1qwiJBEucFpSCCMxiFKYJwMlXT5qkwwPicnC1jAuEFFG3nEIudYQQTZsdo5NJz7XjyFtk6-rykZJymaO0vPVpqC9GVY5k-iHoByBIf_4vFpWe4FnHVu2cCZrPIX9o"/>
+</div>
+</nav>
+</header>
+<main class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8 halftone-bg">
+
+{% if error %}
+<div class="comic-panel bg-red-600 text-white p-4 mb-6 comic-border">
+<p class="font-bold uppercase">Could not load activities</p>
+<p>{{ error }}</p>
+</div>
+{% endif %}
+
+<!-- Hero Section: Stats Panels -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Stats Panel 1: Total Distance -->
+<div class="comic-panel bg-primary p-6 flex flex-col justify-center items-center min-h-[200px] group">
+<div class="absolute top-2 left-2 bg-black text-white px-3 py-1 text-xs font-bold uppercase italic">System Status</div>
+<div class="text-white text-center">
+<p class="text-lg font-bold uppercase tracking-widest opacity-80">Total Distance</p>
+<p class="text-6xl font-black italic leading-none my-2">{{ metrics.totals.total_distance_km }} <span class="text-2xl">KM</span></p>
+</div>
+</div>
+<!-- Stats Panel 2: Moving time -->
+<div class="comic-panel bg-white dark:bg-slate-800 p-6 flex flex-col justify-center items-center min-h-[200px]">
+<div class="absolute top-2 left-2 bg-primary text-white px-3 py-1 text-xs font-bold uppercase italic">Moving Time</div>
+<div class="flex flex-col items-center">
+<p class="text-black dark:text-white text-2xl md:text-3xl font-black italic">{{ metrics.totals.total_moving_time_formatted }}</p>
+</div>
+</div>
+<!-- Stats Panel 3: Elevation -->
+<div class="comic-panel bg-accent-yellow p-6 flex flex-col justify-center items-center min-h-[200px]">
+<div class="absolute top-2 left-2 bg-black text-white px-3 py-1 text-xs font-bold uppercase italic">Elevation Gain</div>
+<div class="text-black text-center">
+<p class="text-lg font-bold uppercase tracking-widest opacity-80">Total</p>
+<p class="text-6xl font-black italic leading-none my-2 text-primary">{{ metrics.totals.total_elevation_gain_m }} <span class="text-2xl">M</span></p>
+</div>
+</div>
+<!-- Stats Panel 4: Activity count -->
+<div class="comic-panel bg-slate-900 p-6 flex flex-col justify-center items-center min-h-[200px]">
+<div class="absolute top-2 left-2 bg-primary text-white px-3 py-1 text-xs font-bold uppercase italic">Activities</div>
+<div class="text-white text-center">
+<p class="text-4xl font-black italic">{{ metrics.totals.activity_count }}</p>
+</div>
+</div>
+</section>
+
+<!-- Charts Section -->
+<div class="flex items-center gap-4 mb-8">
+<h2 class="text-4xl font-black italic text-white bg-black px-6 py-2 -rotate-1 comic-border">CHARTS</h2>
+<div class="h-1 flex-1 bg-black"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<div class="comic-panel bg-white dark:bg-slate-800 p-6 comic-border">
+<h3 class="text-xl font-black uppercase mb-4">Distance by week</h3>
+<div class="chart-container" style="position: relative; height: 280px;">
+<canvas id="chartByWeek"></canvas>
+</div>
+</div>
+<div class="comic-panel bg-white dark:bg-slate-800 p-6 comic-border">
+<h3 class="text-xl font-black uppercase mb-4">Activities by type</h3>
+<div class="chart-container" style="position: relative; height: 280px;">
+<canvas id="chartByType"></canvas>
+</div>
+</div>
+</div>
+
+</main>
+<footer class="bg-black border-t-4 border-primary p-6 mt-12">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-white font-bold italic">© Strava Viewer | Story of My Strides</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-accent-yellow cursor-pointer hover:scale-125 transition-transform">share</span>
+<span class="material-symbols-outlined text-accent-yellow cursor-pointer hover:scale-125 transition-transform">settings</span>
+<span class="material-symbols-outlined text-accent-yellow cursor-pointer hover:scale-125 transition-transform">help</span>
+</div>
+</div>
+</footer>
+</div>
+<script>
+(function () {
+  const byWeekRaw = {{ chart_data_by_week | safe }};
+  const byTypeRaw = {{ chart_data_by_type | safe }};
+
+  if (byWeekRaw.length > 0) {
+    new Chart(document.getElementById('chartByWeek'), {
+      type: 'bar',
+      data: {
+        labels: byWeekRaw.map(function (d) { return d.week_label; }),
+        datasets: [{
+          label: 'Distance (km)',
+          data: byWeekRaw.map(function (d) { return d.distance_km; }),
+          backgroundColor: 'rgba(238, 43, 43, 0.7)',
+          borderColor: 'rgb(238, 43, 43)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  } else {
+    document.getElementById('chartByWeek').parentNode.innerHTML = '<p class="text-slate-500 font-bold">No dated activities to show.</p>';
+  }
+
+  if (byTypeRaw.length > 0) {
+    new Chart(document.getElementById('chartByType'), {
+      type: 'pie',
+      data: {
+        labels: byTypeRaw.map(function (d) { return d.activity_type; }),
+        datasets: [{
+          data: byTypeRaw.map(function (d) { return d.count; }),
+          backgroundColor: [
+            'rgba(238, 43, 43, 0.8)',
+            'rgba(253, 224, 71, 0.8)',
+            'rgba(76, 175, 80, 0.8)',
+            'rgba(33, 150, 243, 0.8)',
+            'rgba(156, 39, 176, 0.8)',
+            'rgba(0, 188, 212, 0.8)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  } else {
+    document.getElementById('chartByType').parentNode.innerHTML = '<p class="text-slate-500 font-bold">No activities to show.</p>';
+  }
+})();
+</script>
+</body></html>
