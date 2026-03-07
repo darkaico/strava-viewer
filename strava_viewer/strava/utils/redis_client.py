@@ -6,7 +6,9 @@ from strava_viewer.strava import settings
 
 
 class _NoOpRedis:
-    """In-memory stub when Redis is not configured. Supports get/set/delete/exists for access-token usage."""
+    """In-memory stub when Redis is not configured.
+    Supports get/set/delete/exists for access-token usage.
+    """
 
     def __init__(self):
         self._store = {}

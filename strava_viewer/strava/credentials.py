@@ -25,9 +25,7 @@ def _from_env():
 def _required_keys_present(data):
     if not data or not isinstance(data, dict):
         return False
-    return all(
-        data.get(k) for k in ("client_id", "client_secret", "refresh_token")
-    )
+    return all(data.get(k) for k in ("client_id", "client_secret", "refresh_token"))
 
 
 def get_strava_credentials(session=None):
