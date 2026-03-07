@@ -6,12 +6,15 @@
     <h2 class="text-black text-2xl font-black uppercase tracking-tighter italic">{{ header_title }}</h2>
   </a>
   <nav class="flex items-center gap-4">
+    {% if strava_connected %}
     <a href="{{ url_for('dashboard') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'dashboard' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Dashboard</a>
     <a href="{{ url_for('activity_list') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'activity_list' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Activity list</a>
     <a href="{{ url_for('lab') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'lab' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %}">Data Lab</a>
-    <button class="bg-white text-black comic-border p-2 flex items-center justify-center hover:bg-yellow-400 transition-colors">
-      <span class="material-symbols-outlined">settings</span>
-    </button>
+    {% endif %}
+    <a href="{{ url_for('config') }}" class="comic-border px-4 py-2 font-bold uppercase text-sm transition-colors {% if active_nav == 'config' %}bg-yellow-400 text-black italic{% else %}bg-white text-black hover:bg-yellow-400{% endif %} flex items-center gap-1">
+      <span class="material-symbols-outlined text-lg">settings</span>
+      Settings
+    </a>
     <div class="size-10 comic-border bg-yellow-400 overflow-hidden">
       <img class="w-full h-full object-cover" data-alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHv8MTt0TOL1t6TgJat7GYJwsa--TkHwvuq5nF5AcU8elzcjEelaI-y5qv9pQfDvUkoAtNxbYEIOX6eAiJt0-ul2vI7sLrZg5th0_TFwwEAxoAU2dN8gAztuxz7GRZqyg4uPEpv2IfJjLEQDWc1s3mcESF3SDL-9M4k2e3yPbo95tM9XCgXvvkNDmRwcZ0Iv5o93zOHbSQuCtRgamjLPLb7zB8KwpGVQC-82nfcQYPYcE117bIKmcZYSJTc_q1-nxfGDl--Pcb3Y"/>
     </div>

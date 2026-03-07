@@ -17,11 +17,16 @@ class StravaAPI(LoggerMixin):
     REFRESH_TOKEN_URL = "https://www.strava.com/oauth/token"
     access_token = None
 
-    def __init__(self):
+    def __init__(self, credentials=None):
         self.redis_client = get_redis_client()
-        self.api_client_id = settings.STRAVA_API_CLIENT_ID
-        self.api_client_secret = settings.STRAVA_API_CLIENT_SECRET
-        self.api_refresh_token = settings.STRAVA_API_REFRESH_TOKEN
+        if credentials and isinstance(credentials, dict):
+            self.api_client_id = credentials.get("client_id")
+            self.api_client_secret = credentials.get("client_secret")
+            self.api_refresh_token = credentials.get("refresh_token")
+        else:
+            self.api_client_id = settings.STRAVA_API_CLIENT_ID
+            self.api_client_secret = settings.STRAVA_API_CLIENT_SECRET
+            self.api_refresh_token = settings.STRAVA_API_REFRESH_TOKEN
 
     @cached_property
     def access_token_redis_key(self):
