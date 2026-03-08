@@ -1,9 +1,12 @@
 """Strava credential resolution: .env first, then Redis, then Flask session."""
 
 import json
+import logging
 
 from strava_viewer.strava import settings
 from strava_viewer.strava.utils.redis_client import get_redis_client
+
+logger = logging.getLogger(__name__)
 
 REDIS_CREDENTIALS_KEY = "strava:credentials"
 SESSION_CREDENTIALS_KEY = "strava_credentials"
@@ -46,8 +49,10 @@ def get_strava_credentials(session=None):
             data = json.loads(raw)
             if _required_keys_present(data):
                 return data
-    except Exception:
-        pass
+    except (json.JSONDecodeError, TypeError) as e:
+        logger.warning("Redis credentials value invalid: %s", e)
+    except Exception as e:
+        logger.exception("Failed to read credentials from Redis: %s", e)
 
     if session:
         data = session.get(SESSION_CREDENTIALS_KEY)
@@ -64,18 +69,17 @@ def set_strava_credentials_redis(data):
     try:
         redis_client = get_redis_client()
         if hasattr(redis_client, "set"):
-            redis_client.set(
-                REDIS_CREDENTIALS_KEY,
-                json.dumps(
-                    {
-                        "client_id": str(data["client_id"]).strip(),
-                        "client_secret": str(data["client_secret"]).strip(),
-                        "refresh_token": str(data["refresh_token"]).strip(),
-                    }
-                ),
+            payload = json.dumps(
+                {
+                    "client_id": str(data["client_id"]).strip(),
+                    "client_secret": str(data["client_secret"]).strip(),
+                    "refresh_token": str(data["refresh_token"]).strip(),
+                }
             )
-    except Exception:
-        pass
+            ex = getattr(settings, "REDIS_CREDENTIALS_TTL", None)
+            redis_client.set(REDIS_CREDENTIALS_KEY, payload, ex=ex)
+    except Exception as e:
+        logger.exception("Failed to write credentials to Redis: %s", e)
 
 
 def set_strava_credentials_session(session, data):
@@ -95,7 +99,7 @@ def clear_strava_credentials(session=None):
         redis_client = get_redis_client()
         if hasattr(redis_client, "delete"):
             redis_client.delete(REDIS_CREDENTIALS_KEY)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.exception("Failed to clear credentials from Redis: %s", e)
     if session and SESSION_CREDENTIALS_KEY in session:
         session.pop(SESSION_CREDENTIALS_KEY, None)

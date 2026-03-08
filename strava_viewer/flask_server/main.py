@@ -17,6 +17,8 @@ from flask import (  # noqa: E402
     session,
     url_for,
 )
+from flask_limiter import Limiter  # noqa: E402
+from flask_limiter.util import get_remote_address  # noqa: E402
 from flask_wtf import CSRFProtect  # noqa: E402
 
 from strava_viewer.strava.credentials import (  # noqa: E402
@@ -33,10 +35,39 @@ from strava_viewer.strava.services.metrics_services import (  # noqa: E402
 )
 
 logger = logging.getLogger(__name__)
+
+_DEBUG = os.getenv("FLASK_DEBUG", "false").strip().lower() in ("true", "1", "yes")
+_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-in-production")
+if not _DEBUG and _SECRET_KEY == "dev-secret-change-in-production":
+    raise RuntimeError(
+        "FLASK_SECRET_KEY must be set in production. Set FLASK_DEBUG=true only for local development."
+    )
+
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-in-production")
+app.config["SECRET_KEY"] = _SECRET_KEY
+app.config["DEBUG"] = _DEBUG
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+if os.getenv("PREFER_HTTPS", "false").strip().lower() in ("true", "1", "yes"):
+    app.config["SESSION_COOKIE_SECURE"] = True
+
 csrf = CSRFProtect()
 csrf.init_app(app)
+
+_storage_uri = os.getenv("RATE_LIMIT_STORAGE_URI")
+if _storage_uri:
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=[os.getenv("RATE_LIMIT_DEFAULT", "200 per hour")],
+        storage_uri=_storage_uri,
+    )
+else:
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=[os.getenv("RATE_LIMIT_DEFAULT", "200 per hour")],
+        storage_uri="memory://",
+    )
 
 
 @app.context_processor
@@ -52,6 +83,14 @@ def _require_strava_credentials():
     return creds
 
 
+def _config_edit_allowed():
+    """Return True if config save/clear is allowed (no password or correct password)."""
+    required = os.getenv("CONFIG_EDIT_PASSWORD", "").strip()
+    if not required:
+        return True
+    return request.form.get("config_edit_password", "").strip() == required
+
+
 @app.route("/")
 def index():
     return render_template(
@@ -62,8 +101,22 @@ def index():
 
 
 @app.route("/config", methods=["GET", "POST"])
+@limiter.limit(os.getenv("RATE_LIMIT_CONFIG", "10 per minute"))
 def config():
+    config_edit_required = bool(os.getenv("CONFIG_EDIT_PASSWORD", "").strip())
     if request.method == "POST":
+        if not _config_edit_allowed():
+            return (
+                render_template(
+                    "config.html",
+                    active_nav="config",
+                    header_title="Strava connection",
+                    strava_connected=get_strava_credentials(session=session) is not None,
+                    config_edit_required=config_edit_required,
+                    config_edit_error="Invalid or missing config password.",
+                ),
+                403,
+            )
         action = request.form.get("action")
         if action == "clear":
             clear_strava_credentials(session=session)
@@ -91,10 +144,13 @@ def config():
         active_nav="config",
         header_title="Strava connection",
         strava_connected=connected,
+        config_edit_required=config_edit_required,
+        config_edit_error=request.args.get("config_edit_error"),
     )
 
 
 @app.route("/activity-list")
+@limiter.limit(os.getenv("RATE_LIMIT_API", "30 per minute"))
 def activity_list():
     creds = _require_strava_credentials()
     if not creds:
@@ -127,6 +183,7 @@ def _format_moving_time(seconds: int) -> str:
 
 
 @app.route("/dashboard")
+@limiter.limit(os.getenv("RATE_LIMIT_API", "30 per minute"))
 def dashboard():
     creds = _require_strava_credentials()
     if not creds:
@@ -156,6 +213,7 @@ def dashboard():
 
 
 @app.route("/lab")
+@limiter.limit(os.getenv("RATE_LIMIT_API", "30 per minute"))
 def lab():
     creds = _require_strava_credentials()
     if not creds:
@@ -186,4 +244,4 @@ def lab():
 
 if __name__ == "__main__":
     port = int(os.getenv("FLASK_PORT", "5000"))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=_DEBUG)

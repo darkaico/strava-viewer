@@ -16,9 +16,24 @@
     </div>
     {% endif %}
 
+    {% if config_edit_error %}
+    <div class="mb-4 p-4 bg-red-100 dark:bg-red-900/30 border-2 border-red-600 text-red-800 dark:text-red-200 font-bold text-sm">
+      {{ config_edit_error }}
+    </div>
+    {% endif %}
+
     <form method="post" action="{{ url_for('config') }}" class="flex flex-col gap-4">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="action" value="save"/>
+
+      {% if config_edit_required %}
+      <div>
+        <label for="config_edit_password" class="block font-black uppercase text-sm text-black dark:text-white mb-1">Config password</label>
+        <input type="password" id="config_edit_password" name="config_edit_password"
+               class="w-full px-4 py-3 comic-border border-2 border-black bg-white dark:bg-slate-700 text-black dark:text-white font-bold"
+               placeholder="Required to save or clear connection" autocomplete="off"/>
+      </div>
+      {% endif %}
 
       <div>
         <label for="client_id" class="block font-black uppercase text-sm text-black dark:text-white mb-1">Client ID</label>
@@ -52,9 +67,17 @@
     </form>
 
     {% if strava_connected %}
-    <form method="post" action="{{ url_for('config') }}" class="mt-6 pt-6 border-t-2 border-slate-300 dark:border-slate-600">
+    <form method="post" action="{{ url_for('config') }}" class="mt-6 pt-6 border-t-2 border-slate-300 dark:border-slate-600 flex flex-col gap-4">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="action" value="clear"/>
+      {% if config_edit_required %}
+      <div>
+        <label for="config_edit_password_clear" class="block font-black uppercase text-sm text-black dark:text-white mb-1">Config password</label>
+        <input type="password" id="config_edit_password_clear" name="config_edit_password"
+               class="w-full px-4 py-3 comic-border border-2 border-black bg-white dark:bg-slate-700 text-black dark:text-white font-bold"
+               placeholder="Required to clear connection" autocomplete="off"/>
+      </div>
+      {% endif %}
       <button type="submit" class="w-full py-3 comic-border border-2 border-slate-500 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-black uppercase text-sm hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
         Clear connection
       </button>

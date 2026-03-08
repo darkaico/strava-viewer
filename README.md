@@ -30,6 +30,15 @@ FLASK_PORT=5000
 
 For local development, use [python-dotenv](https://github.com/theskumar/python-dotenv): create a `.env` file in the project root (see `.env.example`).
 
+### Security and production
+
+- **FLASK_SECRET_KEY** — Required when not in debug mode. The app will not start in production without a strong secret. Use a long random value (e.g. `openssl rand -hex 32`). Set **FLASK_DEBUG=true** only for local development.
+- **FLASK_DEBUG** — Default is false. Enable only for local development; disable in production to avoid exposing stack traces.
+- **PREFER_HTTPS** — Set to `true` when the app is served over HTTPS so session cookies are marked `Secure`.
+- **CONFIG_EDIT_PASSWORD** — Optional. If set, anyone who wants to save or clear Strava credentials on the `/config` page must enter this password. Use this to restrict who can change connection settings.
+- **Redis** — In production, use a password-protected Redis URL (e.g. `redis://:password@host:6379`) and restrict network access to Redis. Optionally set **REDIS_CREDENTIALS_TTL** (seconds) so credentials stored from the config form expire after a period.
+- **Rate limiting** — The app applies rate limits to `/config` and to activity/dashboard/lab routes. Set **RATE_LIMIT_STORAGE_URI** (e.g. to your Redis URL) for persistent limits across processes; otherwise limits are in-memory. Limits can be tuned with **RATE_LIMIT_DEFAULT**, **RATE_LIMIT_CONFIG**, and **RATE_LIMIT_API** (see `.env.example`).
+
 #### Getting a refresh token with activity access
 
 The "Your Access Token" on the Strava app page is short-lived and may only have `read` scope. To get a **refresh token** that includes `activity:read`:
@@ -83,6 +92,8 @@ uv sync --all-extras
 ```
 
 **Run the app**
+
+For local runs, set `FLASK_DEBUG=true` in `.env` so `FLASK_SECRET_KEY` is not required.
 
 ```shell
 uv run python strava_viewer/flask_server/main.py

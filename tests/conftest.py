@@ -1,3 +1,9 @@
+import os
+
+# Ensure production SECRET_KEY check does not run during tests
+os.environ.setdefault("FLASK_DEBUG", "true")
+os.environ.setdefault("FLASK_SECRET_KEY", "test-secret-key")
+
 from dataclasses import dataclass, field
 from typing import Optional
 
