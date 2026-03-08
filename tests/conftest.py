@@ -126,3 +126,20 @@ def api_http_error_401(mocker):
         return MockResponse(401)
 
     mocker.patch.object(requests, "get", mockreturn)
+
+
+# Fake credentials so tests never depend on .env and never call real Strava.
+FAKE_CREDENTIALS = {
+    "client_id": "123",
+    "client_secret": "secret",
+    "refresh_token": "token",
+}
+
+
+@pytest.fixture
+def mock_strava_credentials(mocker):
+    """Patch get_strava_credentials so activities_services tests pass in CI without .env."""
+    return mocker.patch(
+        "strava_viewer.strava.services.activities_services.get_strava_credentials",
+        return_value=FAKE_CREDENTIALS.copy(),
+    )
