@@ -99,18 +99,28 @@ class StravaAPI(LoggerMixin):
             self.logger.exception("Activity list validation failed")
             raise
 
-    def get_athlete_activities(self, after=None, before=None, per_page=200):
-        """List the authenticated athlete's activities. Requires activity:read scope."""
+    def get_athlete_activities_raw(self, after=None, before=None, per_page=200):
+        """Return raw JSON list of athlete activities (for caching)."""
         resource_url = "athlete/activities"
         params = {"per_page": min(per_page, 200)}
         if after is not None:
             params["after"] = int(after)
         if before is not None:
             params["before"] = int(before)
-        json_activities = self.get(resource_url, params=params)
+        return self.get(resource_url, params=params) or []
+
+    def get_athlete_activities(self, after=None, before=None, per_page=200):
+        """List the authenticated athlete's activities. Requires activity:read scope."""
+        json_activities = self.get_athlete_activities_raw(
+            after=after, before=before, per_page=per_page
+        )
         return self._parse_activities(json_activities)
 
-    def get_club_activities(self, club_id: int):
+    def get_club_activities_raw(self, club_id: int):
+        """Return raw JSON list of club activities (for caching)."""
         resource_url = f"clubs/{club_id}/activities"
-        json_activities = self.get(resource_url)
+        return self.get(resource_url) or []
+
+    def get_club_activities(self, club_id: int):
+        json_activities = self.get_club_activities_raw(club_id)
         return self._parse_activities(json_activities)

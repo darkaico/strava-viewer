@@ -4,15 +4,15 @@ import os
 os.environ.setdefault("FLASK_DEBUG", "true")
 os.environ.setdefault("FLASK_SECRET_KEY", "test-secret-key")
 
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass, field  # noqa: E402
+from typing import Optional  # noqa: E402
 
-import pytest
-import redis
-import requests
+import pytest  # noqa: E402
+import redis  # noqa: E402
+import requests  # noqa: E402
 
-from strava_viewer.strava.api import StravaAPI
-from tests.fixtures import loaders
+from strava_viewer.strava.api import StravaAPI  # noqa: E402
+from tests.fixtures import loaders  # noqa: E402
 
 
 @dataclass

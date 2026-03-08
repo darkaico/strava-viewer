@@ -28,6 +28,7 @@ from strava_viewer.strava.credentials import (  # noqa: E402
     set_strava_credentials_session,
 )
 from strava_viewer.strava.services.activities_services import (  # noqa: E402
+    clear_activities_cache,
     get_activities_for_view,
 )
 from strava_viewer.strava.services.metrics_services import (  # noqa: E402
@@ -40,7 +41,8 @@ _DEBUG = os.getenv("FLASK_DEBUG", "false").strip().lower() in ("true", "1", "yes
 _SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-in-production")
 if not _DEBUG and _SECRET_KEY == "dev-secret-change-in-production":
     raise RuntimeError(
-        "FLASK_SECRET_KEY must be set in production. Set FLASK_DEBUG=true only for local development."
+        "FLASK_SECRET_KEY must be set in production. "
+        "Set FLASK_DEBUG=true only for local development."
     )
 
 app = Flask(__name__)
@@ -121,6 +123,9 @@ def config():
         if action == "clear":
             clear_strava_credentials(session=session)
             return redirect(url_for("config"))
+        if action == "clear_cache":
+            clear_activities_cache()
+            return redirect(url_for("config", cache_cleared="1"))
         if action == "save":
             client_id = request.form.get("client_id", "").strip()
             client_secret = request.form.get("client_secret", "").strip()
@@ -146,6 +151,7 @@ def config():
         strava_connected=connected,
         config_edit_required=config_edit_required,
         config_edit_error=request.args.get("config_edit_error"),
+        cache_cleared=request.args.get("cache_cleared") == "1",
     )
 
 

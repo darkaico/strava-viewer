@@ -6,6 +6,59 @@ App that fetches information from Strava and shows it in a simple Flask applicat
 
 Redis is used to store the Strava access token with an expiration time. You can change this to store it in memory during app run if you want to test without Redis.
 
+## Data flow
+
+The following sequence diagram shows how a request for activity data flows from the browser through auth, credentials, cache, and the Strava API.
+
+```mermaid
+sequenceDiagram
+    participant User as Browser
+    participant Flask
+    participant Credentials
+    participant Redis
+    participant Activities as ActivitiesService
+    participant Client as Strava client (app)
+    participant Strava as Strava API
+
+    User->>Flask: GET /dashboard or /activity-list or /lab
+    Flask->>Credentials: get_strava_credentials(session)
+    Note over Credentials: .env then Redis then session
+    Credentials-->>Flask: credentials or None
+
+    alt No credentials
+        Flask-->>User: Redirect to /config
+    else Has credentials
+        Flask->>Activities: get_activities_for_view(credentials)
+        Activities->>Redis: get(strava:activities)
+        alt Cache hit
+            Redis-->>Activities: cached JSON
+            Activities->>Activities: parse to SummaryActivity list
+            Activities-->>Flask: activities
+        else Cache miss
+            Redis-->>Activities: null
+            Activities->>Client: get_athlete_activities_raw()
+            Client->>Redis: exists(access-token-{client_id})
+            alt Token missing or expired
+                Redis-->>Client: 0
+                Client->>Strava: POST /oauth/token (refresh_token)
+                Strava-->>Client: access_token, expires_at
+                Client->>Redis: set(access-token, ex=ttl)
+            end
+            Client->>Strava: GET /api/v3/athlete/activities
+            Strava-->>Client: JSON activities
+            Client-->>Activities: raw JSON
+            Activities->>Redis: set(strava:activities, json, ex=24h)
+            Activities->>Activities: parse to SummaryActivity list
+            Activities-->>Flask: activities
+        end
+        Flask-->>User: HTML response
+    end
+```
+
+- **Credentials** are resolved in order: `.env` → Redis (`strava:credentials`) → Flask session. Saving on `/config` writes to Redis and session.
+- **Access token**: Strava API calls use a short-lived token. The app stores it in Redis key `access-token-{client_id}` and refreshes it via Strava OAuth when missing or after 401.
+- **Activities cache**: Raw activity JSON is cached under `strava:activities` (and `strava:activities:club:{id}` for club feeds) with a 24-hour TTL. Settings has a “Clear cached activities” option to force a fresh fetch.
+
 ## Setup
 
 ### Strava API
