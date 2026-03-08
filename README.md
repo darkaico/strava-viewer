@@ -124,6 +124,8 @@ The "Your Access Token" on the Strava app page is short-lived and may only have 
 
 ### Docker
 
+For production use with Docker, provide a real `.env` file with your secrets (docker-compose uses `.env.example` by default, which only has placeholders).
+
 ```bash
 docker-compose up
 ```

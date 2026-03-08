@@ -53,6 +53,8 @@ docs/_build/
 
 # Local-only draft (not for GitHub)
 docs/medium_article.md
+docs/diagram_before.mmd
+docs/diagram_after.mmd
 
 # PyBuilder
 target/
